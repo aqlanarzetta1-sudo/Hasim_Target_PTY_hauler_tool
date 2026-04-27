@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator PTY Compact</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-200 font-sans text-sm h-screen flex flex-col justify-center items-center p-2">
+
+    <div class="h-full max-h-[850px] w-full bg-slate-200 flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl rounded-2xl relative">
+        
+        <!-- Header Compact -->
+        <div class="bg-yellow-400 py-3 px-4 flex items-center justify-center gap-2 shadow-sm z-10 shrink-0">
+            <i data-lucide="truck" class="w-5 h-5 text-yellow-900"></i>
+            <h1 class="font-black text-yellow-900 text-lg tracking-tight">Kalkulator PTY & Evaluasi</h1>
+        </div>
+
+        <!-- Area Input (Putih) -->
+        <div class="bg-white px-4 py-3 shadow-sm rounded-b-2xl z-10 flex flex-col gap-3 shrink-0">
+            
+            <!-- Row 1: Hauler & Loader Dropdowns -->
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                        <i data-lucide="truck" class="w-3 h-3"></i> Hauler
+                    </label>
+                    <select id="hauler" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-yellow-400 outline-none">
+                        <!-- Options populated via JS -->
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                        <!-- Custom icon for Combine since lucide doesn't have it by default in all versions, using hammer instead for loader proxy -->
+                        <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Loader
+                    </label>
+                    <select id="loader" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-400 outline-none">
+                        <!-- Options populated via JS -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Distance Slider -->
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                        <i data-lucide="map" class="w-3 h-3"></i> Jarak Hauling
+                    </label>
+                    <span id="distance-val" class="font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs">1.0 KM</span>
+                </div>
+                <input id="distance" type="range" min="0.5" max="4.0" step="0.1" value="1.0" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none accent-blue-600">
+            </div>
+
+            <!-- Row 3: Jam Kerja & Ritase Aktual -->
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                        <i data-lucide="clock" class="w-3 h-3"></i> Jam Kerja
+                    </label>
+                    <div class="flex rounded-lg overflow-hidden border border-slate-300 focus-within:ring-2 focus-within:ring-blue-400">
+                        <input id="jam" type="number" min="1" value="10" class="w-full bg-slate-50 px-2 py-1.5 font-bold outline-none text-center">
+                        <span class="bg-slate-200 px-2 py-1.5 text-xs font-bold text-slate-600 flex items-center">Jam</span>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                        <i data-lucide="clipboard-list" class="w-3 h-3"></i> Ritase Aktual
+                    </label>
+                    <div class="flex rounded-lg overflow-hidden border border-slate-300 focus-within:ring-2 focus-within:ring-blue-400">
+                        <input id="rit" type="number" min="0" value="25" class="w-full bg-slate-50 px-2 py-1.5 font-bold outline-none text-center">
+                        <span class="bg-slate-200 px-2 py-1.5 text-xs font-bold text-slate-600 flex items-center">Rit</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Area Hasil (Gelap) -->
+        <div class="flex-1 bg-slate-800 flex flex-col p-4 text-white overflow-y-auto">
+            
+            <!-- View: Error / Tidak Direkomendasikan -->
+            <div id="view-error" class="hidden flex-1 flex-col items-center justify-center text-center p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                <i data-lucide="alert-triangle" class="w-10 h-10 text-red-500 mb-2"></i>
+                <h3 class="text-lg font-black text-red-400 mb-1">TIDAK DIREKOMENDASIKAN</h3>
+                <p class="text-xs text-slate-400">Kombinasi unit ini tidak sesuai standar.</p>
+            </div>
+
+            <!-- View: Success / Hasil Kalkulasi -->
+            <div id="view-success" class="flex flex-col h-full hidden">
+                
+                <!-- Standar Per Jam (Mini Grid) -->
+                <div class="grid grid-cols-3 gap-2 bg-slate-700/50 p-2.5 rounded-xl border border-slate-600 mb-3 shrink-0">
+                    <div class="text-center border-r border-slate-600">
+                        <div class="text-[10px] text-slate-400 font-medium">Rit/Jam</div>
+                        <div id="rit-jam" class="font-black text-lg text-white">0</div>
+                    </div>
+                    <div class="text-center border-r border-slate-600">
+                        <div class="text-[10px] text-slate-400 font-medium">BCM/Jam</div>
+                        <div id="bcm-jam" class="font-black text-lg text-blue-400">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 font-medium">Kebutuhan Unit</div>
+                        <div id="kebutuhan" class="font-black text-lg text-yellow-400">0</div>
+                    </div>
+                </div>
+
+                <!-- Banner Evaluasi -->
+                <div id="eval-banner" class="p-3 rounded-xl border flex items-center justify-center gap-2 mb-3 shadow-lg shrink-0">
+                    <i id="icon-success" data-lucide="check-circle-2" class="w-6 h-6 hidden"></i>
+                    <i id="icon-error" data-lucide="x-circle" class="w-6 h-6 hidden"></i>
+                    <span id="eval-text" class="font-black text-lg tracking-wide">
+                        -
+                    </span>
+                </div>
+
+                <!-- Komparasi Target vs Aktual -->
+                <div class="flex gap-3 mb-auto">
+                    <div class="flex-1 bg-slate-700 p-3 rounded-xl border border-slate-600 text-center relative overflow-hidden">
+                        <div class="text-[10px] uppercase text-slate-400 font-bold mb-1">Target Seharusnya</div>
+                        <div class="font-black text-2xl text-white"><span id="target-rit">0</span> <span class="text-xs font-normal text-slate-400">Rit</span></div>
+                        <div class="text-[10px] text-slate-400 mt-1">Vol: <span id="target-bcm">0</span> BCM</div>
+                    </div>
+                    <div id="aktual-box" class="flex-1 p-3 rounded-xl border text-center relative overflow-hidden">
+                        <div id="aktual-title" class="text-[10px] uppercase font-bold mb-1">Pencapaian Aktual</div>
+                        <div id="aktual-rit-container" class="font-black text-2xl"><span id="aktual-rit">0</span> <span class="text-xs font-normal opacity-70">Rit</span></div>
+                        <div id="aktual-bcm-container" class="text-[10px] mt-1">Vol: <span id="aktual-bcm">0</span> BCM</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar Bawah -->
+                <div class="mt-4 bg-slate-900/50 p-3 rounded-xl shrink-0">
+                    <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5">
+                        <span id="progress-text">Pencapaian: 0%</span>
+                        <span>Target: 100%</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div id="progress-bar" class="h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Data Configuration
+        const DISTANCES = [
+            0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 
+            2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 
+            3.7, 3.8, 3.9, 4.0
+        ];
+
+        const DATABASE = {
+            "HD 465 / OHT 773": {
+                capacity: 24.5,
+                loaders: {
+                    "PC 1250 / ZX 1200": { recommended: true, rit: [8.4, 7.6, 7.0, 6.5, 6.0, 5.7, 5.3, 5.0, 4.7, 4.5, 4.3, 4.1, 3.9, 3.7, 3.6, 3.4, 3.3, 3.2, 3.1, 3.0, 2.9, 2.8, 2.7, 2.6, 2.5, 2.5, 2.4, 2.3, 2.3, 2.2, 2.2, 2.1, 2.1, 2.0, 2.0, 1.9], need: [2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10] },
+                    "PC 800 / ZX 870": { recommended: true, rit: [7.0, 6.5, 6.1, 5.7, 5.3, 5.0, 4.7, 4.5, 4.3, 4.1, 3.9, 3.7, 3.6, 3.4, 3.3, 3.2, 3.1, 3.0, 2.9, 2.8, 2.7, 2.6, 2.5, 2.5, 2.4, 2.3, 2.3, 2.2, 2.2, 2.1, 2.1, 2.0, 2.0, 1.9, 1.9, 1.8], need: [2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 8] },
+                    "PC 400 / ZX 470": { recommended: false }
+                }
+            },
+            "HD 785": {
+                capacity: 42.0,
+                loaders: {
+                    "PC 1250 / ZX 1200": { recommended: true, rit: [6.8, 6.3, 5.9, 5.5, 5.2, 4.9, 4.7, 4.4, 4.2, 4.0, 3.8, 3.7, 3.5, 3.4, 3.3, 3.1, 3.0, 2.9, 2.8, 2.8, 2.7, 2.6, 2.5, 2.4, 2.4, 2.3, 2.3, 2.2, 2.1, 2.1, 2.0, 2.0, 2.0, 1.9, 1.9, 1.8], need: [2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6] },
+                    "PC 800 / ZX 870": { recommended: false },
+                    "PC 400 / ZX 470": { recommended: false }
+                }
+            }
+        };
+
+        const HAULERS = Object.keys(DATABASE);
+        const LOADERS = Object.keys(DATABASE["HD 465 / OHT 773"].loaders);
+
+        // DOM Elements
+        const elHauler = document.getElementById('hauler');
+        const elLoader = document.getElementById('loader');
+        const elDistance = document.getElementById('distance');
+        const elDistanceVal = document.getElementById('distance-val');
+        const elJam = document.getElementById('jam');
+        const elRit = document.getElementById('rit');
+
+        // Initialization
+        function init() {
+            // Populate Haulers
+            HAULERS.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h;
+                opt.textContent = `${h} (${DATABASE[h].capacity} BCM)`;
+                elHauler.appendChild(opt);
+            });
+
+            // Populate Loaders
+            LOADERS.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l;
+                opt.textContent = l;
+                elLoader.appendChild(opt);
+            });
+
+            // Add event listeners
+            [elHauler, elLoader, elDistance, elJam, elRit].forEach(el => {
+                el.addEventListener('input', updateUI);
+            });
+
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // First Calculation
+            updateUI();
+        }
+
+        // Helper
+        function getDistanceIndex(val) {
+            let closestIndex = 0;
+            let minDiff = Infinity;
+            DISTANCES.forEach((d, i) => {
+                const diff = Math.abs(d - val);
+                if (diff < minDiff) { 
+                    minDiff = diff; 
+                    closestIndex = i; 
+                }
+            });
+            return closestIndex;
+        }
+
+        // Main Update Function
+        function updateUI() {
+            const hauler = elHauler.value;
+            const loader = elLoader.value;
+            const distance = parseFloat(elDistance.value);
+            const jamKerja = parseInt(elJam.value) || 0;
+            const ritaseAktual = parseInt(elRit.value) || 0;
+
+            // Update Label
+            elDistanceVal.textContent = distance.toFixed(1) + ' KM';
+
+            const capacity = DATABASE[hauler].capacity;
+            const loaderData = DATABASE[hauler].loaders[loader];
+
+            const viewError = document.getElementById('view-error');
+            const viewSuccess = document.getElementById('view-success');
+
+            if (!loaderData || !loaderData.recommended) {
+                // Show Error
+                viewError.classList.remove('hidden');
+                viewError.classList.add('flex');
+                viewSuccess.classList.add('hidden');
+                viewSuccess.classList.remove('flex');
+                return;
+            }
+
+            // Show Success Area
+            viewError.classList.add('hidden');
+            viewError.classList.remove('flex');
+            viewSuccess.classList.remove('hidden');
+            viewSuccess.classList.add('flex');
+
+            // Calculations
+            const idx = getDistanceIndex(distance);
+            const ritJam = loaderData.rit[idx];
+            const bcmJam = ritJam * capacity;
+            const kebutuhan = loaderData.need[idx];
+            const targetRitaseTotal = ritJam * jamKerja;
+            const targetBcmTotal = targetRitaseTotal * capacity;
+            const aktualBcmTotal = ritaseAktual * capacity;
+            const isTercapai = ritaseAktual >= targetRitaseTotal;
+            let persentase = targetRitaseTotal > 0 ? (ritaseAktual / targetRitaseTotal) * 100 : 0;
+            if (!isFinite(persentase)) persentase = 0;
+
+            // Update Text
+            document.getElementById('rit-jam').textContent = ritJam.toFixed(1);
+            document.getElementById('bcm-jam').textContent = bcmJam.toFixed(0);
+            document.getElementById('kebutuhan').textContent = kebutuhan;
+            
+            document.getElementById('target-rit').textContent = targetRitaseTotal.toFixed(0);
+            document.getElementById('target-bcm').textContent = targetBcmTotal.toFixed(0);
+            
+            document.getElementById('aktual-rit').textContent = ritaseAktual;
+            document.getElementById('aktual-bcm').textContent = aktualBcmTotal.toFixed(0);
+            
+            document.getElementById('progress-text').textContent = `Pencapaian: ${persentase.toFixed(1)}%`;
+
+            // Update Evaluasi UI Colors
+            const evalBanner = document.getElementById('eval-banner');
+            const evalText = document.getElementById('eval-text');
+            const iconSuccess = document.getElementById('icon-success');
+            const iconError = document.getElementById('icon-error');
+            
+            const aktualBox = document.getElementById('aktual-box');
+            const aktualTitle = document.getElementById('aktual-title');
+            const aktualRitContainer = document.getElementById('aktual-rit-container');
+            const aktualBcmContainer = document.getElementById('aktual-bcm-container');
+            const progressBar = document.getElementById('progress-bar');
+
+            // Reset classes
+            evalBanner.className = 'p-3 rounded-xl border flex items-center justify-center gap-2 mb-3 shadow-lg shrink-0';
+            aktualBox.className = 'flex-1 p-3 rounded-xl border text-center relative overflow-hidden';
+            aktualTitle.className = 'text-[10px] uppercase font-bold mb-1';
+            aktualRitContainer.className = 'font-black text-2xl';
+            aktualBcmContainer.className = 'text-[10px] mt-1';
+            progressBar.className = 'h-2 rounded-full transition-all duration-500';
+
+            if (isTercapai) {
+                // Style Tercapai (Green)
+                evalBanner.classList.add('bg-green-500/20', 'border-green-500/50', 'text-green-400');
+                evalText.textContent = 'TARGET TERCAPAI';
+                iconSuccess.classList.remove('hidden');
+                iconError.classList.add('hidden');
+
+                aktualBox.classList.add('bg-green-900/30', 'border-green-700/50');
+                aktualTitle.classList.add('text-green-500');
+                aktualRitContainer.classList.add('text-green-400');
+                aktualBcmContainer.classList.add('text-green-500');
+                
+                progressBar.classList.add('bg-green-500');
+            } else {
+                // Style Tidak Tercapai (Red)
+                evalBanner.classList.add('bg-red-500/20', 'border-red-500/50', 'text-red-400');
+                evalText.textContent = 'TIDAK TERCAPAI';
+                iconSuccess.classList.add('hidden');
+                iconError.classList.remove('hidden');
+
+                aktualBox.classList.add('bg-red-900/30', 'border-red-700/50');
+                aktualTitle.classList.add('text-red-500');
+                aktualRitContainer.classList.add('text-red-400');
+                aktualBcmContainer.classList.add('text-red-500');
+
+                progressBar.classList.add('bg-red-500');
+            }
+
+            // Update Progress Bar Width (Max 100%)
+            progressBar.style.width = Math.min(persentase, 100) + '%';
+        }
+
+        // Run setup on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
