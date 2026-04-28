@@ -8,6 +8,75 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Styling untuk Slider Jarak (Mechanical Grip Style) */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent; 
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        /* Styling Jalur (Track) */
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #93c5fd; /* tailwind blue-300 */
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #93c5fd;
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        /* Styling Tombol (Thumb) */
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 36px;
+            border-radius: 6px;
+            background-color: #2563eb; /* tailwind blue-600 */
+            /* Membuat icon garis pegangan / grip menggunakan SVG */
+            background-image: url('data:image/svg+xml;utf8,<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V6"/><path d="M15 18V6"/></svg>');
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 24px;
+            width: 36px;
+            border-radius: 6px;
+            background-color: #2563eb;
+            background-image: url('data:image/svg+xml;utf8,<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V6"/><path d="M15 18V6"/></svg>');
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+        /* Efek saat disentuh / digeser */
+        input[type=range]:hover::-webkit-slider-thumb, 
+        input[type=range]:active::-webkit-slider-thumb {
+            background-color: #1d4ed8; /* blue-700 */
+            transform: scale(1.05);
+        }
+        input[type=range]:hover::-moz-range-thumb,
+        input[type=range]:active::-moz-range-thumb {
+            background-color: #1d4ed8;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body class="bg-slate-200 font-sans h-[100dvh] flex flex-col items-center sm:p-2 overflow-hidden text-slate-800">
 
@@ -84,22 +153,23 @@
                 </div>
             </div>
 
-            <!-- 2. Parameter -->
-            <div class="bg-white px-4 py-3 rounded-2xl shadow-sm border border-blue-100 flex-1 flex flex-col justify-evenly min-h-0">
-                <div class="text-xs font-black text-blue-500 uppercase tracking-widest border-b border-blue-50 pb-1.5 flex items-center gap-1.5">
+            <!-- 2. Parameter (Warna diubah menjadi biru yang lebih tegas) -->
+            <div class="bg-blue-100 px-4 py-3 rounded-2xl shadow-sm border border-blue-300 flex-1 flex flex-col justify-evenly min-h-0">
+                <div class="text-xs font-black text-blue-700 uppercase tracking-widest border-b border-blue-200 pb-1.5 flex items-center gap-1.5">
                     <i data-lucide="settings-2" class="w-4 h-4"></i> Parameter Alat
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3 w-full">
                     <div>
-                        <label class="text-[11px] font-bold text-slate-500 mb-1 block">Unit Hauler</label>
-                        <select id="hauler" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2.5 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-xs shadow-inner">
+                        <label class="text-[11px] font-bold text-blue-900 mb-1 block">Unit Hauler</label>
+                        <!-- Dropdown dibuat bg-white agar kontras dengan biru muda -->
+                        <select id="hauler" class="w-full bg-white border border-blue-300 text-slate-700 font-bold rounded-lg px-2.5 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-xs shadow-sm">
                             <!-- Options -->
                         </select>
                     </div>
                     <div>
-                        <label class="text-[11px] font-bold text-slate-500 mb-1 block">Unit Loader</label>
-                        <select id="loader" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2.5 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-xs shadow-inner">
+                        <label class="text-[11px] font-bold text-blue-900 mb-1 block">Unit Loader</label>
+                        <select id="loader" class="w-full bg-white border border-blue-300 text-slate-700 font-bold rounded-lg px-2.5 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-xs shadow-sm">
                             <!-- Options -->
                         </select>
                     </div>
@@ -107,10 +177,11 @@
 
                 <div class="w-full mt-1">
                     <div class="flex justify-between items-center mb-1.5">
-                        <label class="text-[11px] font-bold text-slate-500">Jarak Hauling</label>
-                        <span id="distance-val" class="font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded text-xs border border-blue-200">1.0 KM</span>
+                        <label class="text-[11px] font-bold text-blue-900">Jarak Hauling</label>
+                        <span id="distance-val" class="font-black text-blue-800 bg-blue-200 px-2 py-0.5 rounded text-xs border border-blue-300">1.0 KM</span>
                     </div>
-                    <input id="distance" type="range" min="0.5" max="4.0" step="0.1" value="1.0" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none accent-blue-600 cursor-pointer">
+                    <!-- Slider diubah dengan CSS Custom -->
+                    <input id="distance" type="range" min="0.5" max="4.0" step="0.1" value="1.0" class="w-full cursor-pointer focus:outline-none my-1">
                 </div>
             </div>
 
