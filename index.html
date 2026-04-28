@@ -9,36 +9,35 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-200 font-sans text-sm h-screen flex flex-col justify-center items-center p-2">
+<body class="bg-slate-200 font-sans text-sm h-[100dvh] flex flex-col justify-center items-center sm:p-2 overflow-hidden">
 
-    <div class="h-full max-h-[850px] w-full bg-slate-200 flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl rounded-2xl relative">
+    <div class="h-full w-full bg-slate-200 flex flex-col overflow-hidden max-w-md mx-auto sm:shadow-2xl sm:rounded-2xl relative">
         
         <!-- Header Compact -->
-        <div class="bg-yellow-400 py-3 px-4 flex items-center justify-center gap-2 shadow-sm z-10 shrink-0">
+        <div class="bg-yellow-400 py-2.5 px-3 flex items-center justify-center gap-2 shadow-sm z-10 shrink-0">
             <i data-lucide="truck" class="w-5 h-5 text-yellow-900"></i>
-            <h1 class="font-black text-yellow-900 text-lg tracking-tight">Kalkulator PTY & Evaluasi</h1>
+            <h1 class="font-black text-yellow-900 text-base tracking-tight">Kalkulator PTY & Evaluasi</h1>
         </div>
 
         <!-- Area Input (Putih) -->
-        <div class="bg-white px-4 py-3 shadow-sm rounded-b-2xl z-10 flex flex-col gap-3 shrink-0">
+        <div class="bg-white px-3 py-2 shadow-sm rounded-b-xl z-10 flex flex-col gap-1.5 shrink-0">
             
             <!-- Row 1: Hauler & Loader Dropdowns -->
-            <div class="flex gap-3">
+            <div class="flex gap-2">
                 <div class="flex-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
                         <i data-lucide="truck" class="w-3 h-3"></i> Hauler
                     </label>
-                    <select id="hauler" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-yellow-400 outline-none">
+                    <select id="hauler" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1 focus:ring-2 focus:ring-yellow-400 outline-none text-xs">
                         <!-- Options populated via JS -->
                     </select>
                 </div>
                 <div class="flex-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
-                        <!-- Custom icon for Combine since lucide doesn't have it by default in all versions, using hammer instead for loader proxy -->
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
                         <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         Loader
                     </label>
-                    <select id="loader" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-400 outline-none">
+                    <select id="loader" class="w-full bg-slate-50 border border-slate-300 text-slate-700 font-bold rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-400 outline-none text-xs">
                         <!-- Options populated via JS -->
                     </select>
                 </div>
@@ -46,33 +45,49 @@
 
             <!-- Row 2: Distance Slider -->
             <div>
-                <div class="flex justify-between items-center mb-1">
+                <div class="flex justify-between items-center mb-0.5">
                     <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
                         <i data-lucide="map" class="w-3 h-3"></i> Jarak Hauling
                     </label>
                     <span id="distance-val" class="font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs">1.0 KM</span>
                 </div>
-                <input id="distance" type="range" min="0.5" max="4.0" step="0.1" value="1.0" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none accent-blue-600">
+                <input id="distance" type="range" min="0.5" max="4.0" step="0.1" value="1.0" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none accent-blue-600 cursor-pointer">
             </div>
 
-            <!-- Row 3: Jam Kerja & Ritase Aktual -->
-            <div class="flex gap-3">
-                <div class="flex-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
-                        <i data-lucide="clock" class="w-3 h-3"></i> Jam Kerja
+            <!-- Row 3: HM Awal, HM Akhir, Ritase, Total Jam -->
+            <div class="grid grid-cols-2 gap-2 mt-0.5">
+                <!-- HM Awal -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
+                        <i data-lucide="gauge" class="w-3 h-3"></i> HM Awal
                     </label>
-                    <div class="flex rounded-lg overflow-hidden border border-slate-300 focus-within:ring-2 focus-within:ring-blue-400">
-                        <input id="jam" type="number" min="1" value="10" class="w-full bg-slate-50 px-2 py-1.5 font-bold outline-none text-center">
-                        <span class="bg-slate-200 px-2 py-1.5 text-xs font-bold text-slate-600 flex items-center">Jam</span>
-                    </div>
+                    <input id="hm-awal" type="number" min="0" step="0.1" value="100" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 font-bold outline-none text-center focus:ring-2 focus:ring-blue-400 text-xs">
                 </div>
-                <div class="flex-1">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-1">
+                <!-- HM Akhir -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
+                        <i data-lucide="flag" class="w-3 h-3"></i> HM Akhir
+                    </label>
+                    <input id="hm-akhir" type="number" min="0" step="0.1" value="110" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 font-bold outline-none text-center focus:ring-2 focus:ring-blue-400 text-xs">
+                </div>
+                <!-- Ritase Aktual -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
                         <i data-lucide="clipboard-list" class="w-3 h-3"></i> Ritase Aktual
                     </label>
                     <div class="flex rounded-lg overflow-hidden border border-slate-300 focus-within:ring-2 focus-within:ring-blue-400">
-                        <input id="rit" type="number" min="0" value="25" class="w-full bg-slate-50 px-2 py-1.5 font-bold outline-none text-center">
-                        <span class="bg-slate-200 px-2 py-1.5 text-xs font-bold text-slate-600 flex items-center">Rit</span>
+                        <input id="rit" type="number" min="0" value="25" class="w-full bg-slate-50 px-2 py-1 font-bold outline-none text-center text-xs">
+                        <span class="bg-slate-200 px-1.5 py-1 text-[10px] font-bold text-slate-600 flex items-center">Rit</span>
+                    </div>
+                </div>
+                <!-- Total Jam Calculated -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1 mb-0.5">
+                        <i data-lucide="clock" class="w-3 h-3"></i> Total Jam
+                    </label>
+                    <div class="h-[26px] bg-blue-50 border border-blue-200 rounded-lg px-2 flex items-center justify-center gap-1">
+                        <span id="jam-display" class="font-black text-blue-600 text-base leading-none">0</span>
+                        <span class="text-[9px] font-bold text-blue-400 mt-0.5">JAM</span>
                     </div>
                 </div>
             </div>
@@ -80,65 +95,65 @@
         </div>
 
         <!-- Area Hasil (Gelap) -->
-        <div class="flex-1 bg-slate-800 flex flex-col p-4 text-white overflow-y-auto">
+        <div class="flex-1 bg-slate-800 flex flex-col p-3 text-white overflow-hidden">
             
             <!-- View: Error / Tidak Direkomendasikan -->
-            <div id="view-error" class="hidden flex-1 flex-col items-center justify-center text-center p-4 bg-red-500/10 rounded-xl border border-red-500/20">
-                <i data-lucide="alert-triangle" class="w-10 h-10 text-red-500 mb-2"></i>
-                <h3 class="text-lg font-black text-red-400 mb-1">TIDAK DIREKOMENDASIKAN</h3>
-                <p class="text-xs text-slate-400">Kombinasi unit ini tidak sesuai standar.</p>
+            <div id="view-error" class="hidden flex-1 flex-col items-center justify-center text-center p-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500 mb-2"></i>
+                <h3 class="text-base font-black text-red-400 mb-1">TIDAK DIREKOMENDASIKAN</h3>
+                <p class="text-[10px] text-slate-400">Kombinasi unit ini tidak sesuai standar.</p>
             </div>
 
             <!-- View: Success / Hasil Kalkulasi -->
-            <div id="view-success" class="flex flex-col h-full hidden">
+            <div id="view-success" class="flex flex-col h-full hidden justify-between gap-2">
                 
                 <!-- Standar Per Jam (Mini Grid) -->
-                <div class="grid grid-cols-3 gap-2 bg-slate-700/50 p-2.5 rounded-xl border border-slate-600 mb-3 shrink-0">
+                <div class="grid grid-cols-3 gap-1 bg-slate-700/50 p-1.5 rounded-lg border border-slate-600 shrink-0">
                     <div class="text-center border-r border-slate-600">
-                        <div class="text-[10px] text-slate-400 font-medium">Rit/Jam</div>
-                        <div id="rit-jam" class="font-black text-lg text-white">0</div>
+                        <div class="text-[9px] text-slate-400 font-medium">Rit/Jam</div>
+                        <div id="rit-jam" class="font-black text-base text-white">0</div>
                     </div>
                     <div class="text-center border-r border-slate-600">
-                        <div class="text-[10px] text-slate-400 font-medium">BCM/Jam</div>
-                        <div id="bcm-jam" class="font-black text-lg text-blue-400">0</div>
+                        <div class="text-[9px] text-slate-400 font-medium">BCM/Jam</div>
+                        <div id="bcm-jam" class="font-black text-base text-blue-400">0</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-[10px] text-slate-400 font-medium">Kebutuhan Unit</div>
-                        <div id="kebutuhan" class="font-black text-lg text-yellow-400">0</div>
+                        <div class="text-[9px] text-slate-400 font-medium">Keb. Unit</div>
+                        <div id="kebutuhan" class="font-black text-base text-yellow-400">0</div>
                     </div>
                 </div>
 
                 <!-- Banner Evaluasi -->
-                <div id="eval-banner" class="p-3 rounded-xl border flex items-center justify-center gap-2 mb-3 shadow-lg shrink-0">
-                    <i id="icon-success" data-lucide="check-circle-2" class="w-6 h-6 hidden"></i>
-                    <i id="icon-error" data-lucide="x-circle" class="w-6 h-6 hidden"></i>
-                    <span id="eval-text" class="font-black text-lg tracking-wide">
+                <div id="eval-banner" class="p-2 rounded-lg border flex items-center justify-center gap-1.5 shadow-sm shrink-0">
+                    <i id="icon-success" data-lucide="check-circle-2" class="w-5 h-5 hidden"></i>
+                    <i id="icon-error" data-lucide="x-circle" class="w-5 h-5 hidden"></i>
+                    <span id="eval-text" class="font-black text-sm tracking-wide">
                         -
                     </span>
                 </div>
 
                 <!-- Komparasi Target vs Aktual -->
-                <div class="flex gap-3 mb-auto">
-                    <div class="flex-1 bg-slate-700 p-3 rounded-xl border border-slate-600 text-center relative overflow-hidden">
-                        <div class="text-[10px] uppercase text-slate-400 font-bold mb-1">Target Seharusnya</div>
-                        <div class="font-black text-2xl text-white"><span id="target-rit">0</span> <span class="text-xs font-normal text-slate-400">Rit</span></div>
-                        <div class="text-[10px] text-slate-400 mt-1">Vol: <span id="target-bcm">0</span> BCM</div>
+                <div class="flex gap-2 flex-1 min-h-[60px]">
+                    <div class="flex-1 bg-slate-700 p-2 flex flex-col justify-center rounded-lg border border-slate-600 text-center relative overflow-hidden">
+                        <div class="text-[9px] uppercase text-slate-400 font-bold mb-0.5">Target</div>
+                        <div class="font-black text-lg text-white leading-none mb-0.5"><span id="target-rit">0</span> <span class="text-[9px] font-normal text-slate-400">Rit</span></div>
+                        <div class="text-[9px] text-slate-400">Vol: <span id="target-bcm">0</span> BCM</div>
                     </div>
-                    <div id="aktual-box" class="flex-1 p-3 rounded-xl border text-center relative overflow-hidden">
-                        <div id="aktual-title" class="text-[10px] uppercase font-bold mb-1">Pencapaian Aktual</div>
-                        <div id="aktual-rit-container" class="font-black text-2xl"><span id="aktual-rit">0</span> <span class="text-xs font-normal opacity-70">Rit</span></div>
-                        <div id="aktual-bcm-container" class="text-[10px] mt-1">Vol: <span id="aktual-bcm">0</span> BCM</div>
+                    <div id="aktual-box" class="flex-1 p-2 flex flex-col justify-center rounded-lg border text-center relative overflow-hidden">
+                        <div id="aktual-title" class="text-[9px] uppercase font-bold mb-0.5">Aktual</div>
+                        <div id="aktual-rit-container" class="font-black text-lg leading-none mb-0.5"><span id="aktual-rit">0</span> <span class="text-[9px] font-normal opacity-70">Rit</span></div>
+                        <div id="aktual-bcm-container" class="text-[9px]">Vol: <span id="aktual-bcm">0</span> BCM</div>
                     </div>
                 </div>
 
                 <!-- Progress Bar Bawah -->
-                <div class="mt-4 bg-slate-900/50 p-3 rounded-xl shrink-0">
-                    <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5">
+                <div class="bg-slate-900/50 p-2 rounded-lg shrink-0 mt-auto">
+                    <div class="flex justify-between text-[9px] font-bold text-slate-400 mb-1">
                         <span id="progress-text">Pencapaian: 0%</span>
                         <span>Target: 100%</span>
                     </div>
-                    <div class="w-full bg-slate-700 rounded-full h-2">
-                        <div id="progress-bar" class="h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div class="w-full bg-slate-700 rounded-full h-1.5">
+                        <div id="progress-bar" class="h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
 
@@ -182,8 +197,10 @@
         const elLoader = document.getElementById('loader');
         const elDistance = document.getElementById('distance');
         const elDistanceVal = document.getElementById('distance-val');
-        const elJam = document.getElementById('jam');
+        const elHmAwal = document.getElementById('hm-awal');
+        const elHmAkhir = document.getElementById('hm-akhir');
         const elRit = document.getElementById('rit');
+        const elJamDisplay = document.getElementById('jam-display');
 
         // Initialization
         function init() {
@@ -204,7 +221,7 @@
             });
 
             // Add event listeners
-            [elHauler, elLoader, elDistance, elJam, elRit].forEach(el => {
+            [elHauler, elLoader, elDistance, elHmAwal, elHmAkhir, elRit].forEach(el => {
                 el.addEventListener('input', updateUI);
             });
 
@@ -234,8 +251,17 @@
             const hauler = elHauler.value;
             const loader = elLoader.value;
             const distance = parseFloat(elDistance.value);
-            const jamKerja = parseInt(elJam.value) || 0;
+            
+            // Get HM values and calculate jam
+            const hmAwal = parseFloat(elHmAwal.value) || 0;
+            const hmAkhir = parseFloat(elHmAkhir.value) || 0;
             const ritaseAktual = parseInt(elRit.value) || 0;
+
+            let jamKerja = hmAkhir - hmAwal;
+            if (jamKerja < 0) jamKerja = 0; // Prevent negative hours
+
+            // Format calculation result to display
+            elJamDisplay.textContent = Number.isInteger(jamKerja) ? jamKerja : jamKerja.toFixed(1);
 
             // Update Label
             elDistanceVal.textContent = distance.toFixed(1) + ' KM';
@@ -266,10 +292,14 @@
             const ritJam = loaderData.rit[idx];
             const bcmJam = ritJam * capacity;
             const kebutuhan = loaderData.need[idx];
+            
+            // Target takes into account the dynamically calculated hours
             const targetRitaseTotal = ritJam * jamKerja;
             const targetBcmTotal = targetRitaseTotal * capacity;
             const aktualBcmTotal = ritaseAktual * capacity;
-            const isTercapai = ritaseAktual >= targetRitaseTotal;
+            
+            // Evaluasi (menghindari error target 0 jam)
+            const isTercapai = targetRitaseTotal > 0 ? (ritaseAktual >= targetRitaseTotal) : false;
             let persentase = targetRitaseTotal > 0 ? (ritaseAktual / targetRitaseTotal) * 100 : 0;
             if (!isFinite(persentase)) persentase = 0;
 
@@ -298,15 +328,15 @@
             const aktualBcmContainer = document.getElementById('aktual-bcm-container');
             const progressBar = document.getElementById('progress-bar');
 
-            // Reset classes
-            evalBanner.className = 'p-3 rounded-xl border flex items-center justify-center gap-2 mb-3 shadow-lg shrink-0';
-            aktualBox.className = 'flex-1 p-3 rounded-xl border text-center relative overflow-hidden';
-            aktualTitle.className = 'text-[10px] uppercase font-bold mb-1';
-            aktualRitContainer.className = 'font-black text-2xl';
-            aktualBcmContainer.className = 'text-[10px] mt-1';
-            progressBar.className = 'h-2 rounded-full transition-all duration-500';
+            // Reset classes (disesuaikan dengan styling compact baru)
+            evalBanner.className = 'p-2 rounded-lg border flex items-center justify-center gap-1.5 shadow-sm shrink-0';
+            aktualBox.className = 'flex-1 p-2 flex flex-col justify-center rounded-lg border text-center relative overflow-hidden';
+            aktualTitle.className = 'text-[9px] uppercase font-bold mb-0.5';
+            aktualRitContainer.className = 'font-black text-lg leading-none mb-0.5';
+            aktualBcmContainer.className = 'text-[9px]';
+            progressBar.className = 'h-1.5 rounded-full transition-all duration-500';
 
-            if (isTercapai) {
+            if (isTercapai && targetRitaseTotal > 0) {
                 // Style Tercapai (Green)
                 evalBanner.classList.add('bg-green-500/20', 'border-green-500/50', 'text-green-400');
                 evalText.textContent = 'TARGET TERCAPAI';
@@ -320,9 +350,9 @@
                 
                 progressBar.classList.add('bg-green-500');
             } else {
-                // Style Tidak Tercapai (Red)
+                // Style Tidak Tercapai (Red) / 0 Jam
                 evalBanner.classList.add('bg-red-500/20', 'border-red-500/50', 'text-red-400');
-                evalText.textContent = 'TIDAK TERCAPAI';
+                evalText.textContent = targetRitaseTotal <= 0 ? 'INPUT HM KOSONG/SALAH' : 'TIDAK TERCAPAI';
                 iconSuccess.classList.add('hidden');
                 iconError.classList.remove('hidden');
 
